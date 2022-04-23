@@ -149,26 +149,7 @@ public class AjouterGuideController implements Initializable {
                     System.out.println("bien ajouter");
 
 // SendGrid Mail api 
-                    Email from = new Email("bhjrou5@gmail.com");
-                    String subject = "Clutch.gg ";
-                    Email to = new Email("rawaa.blh@gmail.com");
-                    Content content = new Content("text/plain", "Hello Dear Player we added a new Guide take a look you may find something you like");
-                    Mail mail = new Mail(from, subject, to, content);
 
-                    SendGrid sg = new SendGrid("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"
-                    );
-                    Request request = new Request();
-                    try {
-                        request.setMethod(Method.POST);
-                        request.setEndpoint("mail/send");
-                        request.setBody(mail.build());
-                        Response response = sg.api(request);
-                        System.out.println(response.getStatusCode());
-                        System.out.println(response.getBody());
-                        System.out.println(response.getHeaders());
-                    } catch (IOException ex) {
-                        System.err.println(ex.getMessage());
-                    }
                     // end api 
                     Parent addGuide = FXMLLoader.load(getClass().getResource("GestionGuide.fxml"));
                     Scene addguidescene = new Scene(addGuide);
