@@ -7,7 +7,6 @@ package Controller;
 
 import Entities.Guide;
 import Services.GuideService;
-import gui.Fruit;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;

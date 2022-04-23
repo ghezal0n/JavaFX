@@ -6,7 +6,11 @@
 package gui;
 
 import Entities.Guide;
+import Entities.Jeux;
+import Entities.UserM;
 import Services.GuideService;
+import Services.UserService;
+import Services.jeux_service;
 import com.sendgrid.Content;
 import com.sendgrid.Email;
 import com.sendgrid.Mail;
@@ -27,6 +31,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -49,7 +56,6 @@ public class AjouterGuideController implements Initializable {
     private TextField nbrhTF;
     @FXML
     private TextField gameTF;
-    @FXML
     private TextField CoachLab;
     @FXML
     private TextField PrixLab;
@@ -57,14 +63,49 @@ public class AjouterGuideController implements Initializable {
     private Label DATELabel;
     @FXML
     private Button ajouterBTn;
+    @FXML
+    private ChoiceBox GameChoiceBox;
 
     /**
      * Initializes the controller class.
      */
+    jeux_service js = new jeux_service();
+    UserService us = new UserService();
+    @FXML
+    private Hyperlink CoachLink;
+    String CoachName;
+    String GameName ;
+    Jeux jeu  ;
+     UserM user ;
+     int idJeux ;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        String dateguide = java.time.LocalDate.now().toString();
+        DATELabel.setText(dateguide);
+        for (Jeux jeu : js.afficher()) {
+            GameChoiceBox.getItems().add(jeu.getNomJeux());
+           idJeux = jeu.getId();
+        }
+        
+        GameChoiceBox.setOnAction((event) -> {
+            int selectedIndex = GameChoiceBox.getSelectionModel().getSelectedIndex();
+            Object selectedItem = GameChoiceBox.getSelectionModel().getSelectedItem();
+         //    j  = (Jeux) GameChoiceBox.getValue();
+//            j.getId();
+            GameName = GameChoiceBox.getValue().toString();
+            System.out.println("Selection made: [" + selectedIndex + "] " + selectedItem);
+            System.out.println("   ChoiceBox.getValue(): " + GameChoiceBox.getValue());
+           
+        });
 
+//          for (UserM uss : us.afficher()) {
+//        CoachComboBox.getItems().add(uss.getNom());
+//         }
+        CoachName = us.afficher().get(1).getNom();
+        CoachLink.setText(CoachName);
+        user = us.afficher().get(1);
+//        
     }
 
     @FXML
@@ -72,27 +113,22 @@ public class AjouterGuideController implements Initializable {
         String titreGuide = titleTF.getText();
         String Descrp = DescrpTF.getText();
         int nbrH = Integer.parseInt(nbrhTF.getText());
-        String CoachName = CoachLab.getText();
-        String GameName = gameTF.getText();
         int Prix = Integer.parseInt(PrixLab.getText());
         String dateguide = java.time.LocalDate.now().toString();
         DATELabel.setText(dateguide);
         System.out.println("datelabel" + DATELabel);
 
-        Guide A = new Guide(titreGuide, Descrp, nbrH, dateguide, Prix, GameName, CoachName);
+        Guide A = new Guide(titreGuide, Descrp, nbrH, dateguide, Prix);
+        A.setJeuxId(idJeux);
         GuideService B = new GuideService();
 
-        if (titreGuide.isEmpty() || Descrp.isEmpty() || dateguide.isEmpty() || GameName.isEmpty() || CoachName.isEmpty() || nbrhTF.getText().isEmpty() || PrixLab.getText().isEmpty()) {   //controles de saisie non vide 
+        if (titreGuide.isEmpty() || Descrp.isEmpty() || dateguide.isEmpty() ||  nbrhTF.getText().isEmpty() || PrixLab.getText().isEmpty()) {   //controles de saisie non vide 
 
             JOptionPane.showMessageDialog(null, "Vous avez oublié de remplir vos champs");
 
-        } 
-        else if(titreGuide.isEmpty() && Descrp.isEmpty() && dateguide.isEmpty() && GameName.isEmpty() && CoachName.isEmpty() && nbrhTF.getText().isEmpty() &&PrixLab.getText().isEmpty())
-        {
+        } else if (titreGuide.isEmpty() && Descrp.isEmpty() && dateguide.isEmpty() && GameName.isEmpty() && CoachName.isEmpty() && nbrhTF.getText().isEmpty() && PrixLab.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Vous devez Remplir tout les champs");
-        }
-        
-        else {
+        } else {
 
             boolean existe = true;
             int i = 0;
@@ -108,10 +144,11 @@ public class AjouterGuideController implements Initializable {
             }
             if (!existe) {
                 try {
-                    B.ajouterGuide(A);
+                    B.ajouterGuideObj(A,js.afficherJeuxBuyId(idJeux),user);
 
                     System.out.println("bien ajouter");
-                    // SendGrid Mail api 
+
+// SendGrid Mail api 
                     Email from = new Email("bhjrou5@gmail.com");
                     String subject = "Clutch.gg ";
                     Email to = new Email("rawaa.blh@gmail.com");
@@ -132,6 +169,7 @@ public class AjouterGuideController implements Initializable {
                     } catch (IOException ex) {
                         System.err.println(ex.getMessage());
                     }
+                    // end api 
                     Parent addGuide = FXMLLoader.load(getClass().getResource("GestionGuide.fxml"));
                     Scene addguidescene = new Scene(addGuide);
                     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
