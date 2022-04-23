@@ -117,17 +117,17 @@ public class AjouterReservationController implements Initializable {
                     stage.show();
                     
                              // twillio api sms api 
-                     String accountSID = "ACfb9c0af8637bfc40f8fafd707b9ab606";
-                    String authToken = "80c0361caec26d6728ce9f1ccaaf9839";
-                    String fromPhone = "+13853401562";
-                    Twilio.init(accountSID, authToken);
+                  //   String accountSID = "ACfb9c0af8637bfc40f8fafd707b9ab6060000000";
+                    //String authToken = "80c0361caec26d6728ce9f1ccaaf98390000000000";
+                    //String fromPhone = "+13853401562";
+                    //Twilio.init(accountSID, authToken);
                     
-                    Message message = Message
-                            .creator(new PhoneNumber("+21655821563"), // to
-                                    new PhoneNumber(fromPhone), // from
-                           "Dear Player " + uss.getNom() + " clutch.gg team wanna thank you for adding new reservation of: " +g.getTitre() +"on "+A.getDateRes()+"At "+A.getHeureDebut() )
-                            .create();
-                    System.out.println(message.getSid());
+                    //Message message = Message
+                      //      .creator(new PhoneNumber("+21655821563"), // to
+                          //          new PhoneNumber(fromPhone), // from
+                        //   "Dear Player " + uss.getNom() + " clutch.gg team wanna thank you for adding new reservation of: " +g.getTitre() +"on "+A.getDateRes()+"At "+A.getHeureDebut() )
+                            //.create();
+                    //System.out.println(message.getSid());
                     
                 } catch (IOException ex) {
                     Logger.getLogger(AjouterGuideController.class.getName()).log(Level.SEVERE, null, ex);
